@@ -25,11 +25,7 @@ public class InOutServiceImpl implements InOutService {
 
     @Override
     public int getNoOfProjectPlansInput() {
-        System.out.print("Enter number of project plans: ");
-        int projectPlansNo = sc.nextInt();
-        sc.nextLine();
-
-        return projectPlansNo;
+        return getNumberOfInput("Enter number of project plans: ");
     }
 
     @Override
@@ -41,10 +37,7 @@ public class InOutServiceImpl implements InOutService {
 
     @Override
     public int getNoOfTasksInput() {
-        System.out.print("Enter number of tasks for this plan: ");
-        int noOfTasks = sc.nextInt();
-        sc.nextLine();
-        return noOfTasks;
+        return getNumberOfInput("Enter number of tasks for this plan: ");
     }
 
     @Override
@@ -56,8 +49,7 @@ public class InOutServiceImpl implements InOutService {
 
     @Override
     public int getNoOfDaysToCompleteTask(Task task) {
-        System.out.print("Enter number of days to complete this task: ");
-        int noOfDaysToComplete = sc.nextInt();
+        int noOfDaysToComplete = getNumberOfInput("Enter number of days to complete this task: ");
         task.setNoOfDaysToComplete(noOfDaysToComplete);
         return noOfDaysToComplete;
     }
@@ -65,17 +57,13 @@ public class InOutServiceImpl implements InOutService {
     @Override
     public void getTaskDependenciesInput(ProjectPlan projectPlan, Task task) {
         if (projectPlan.getTasks().size() > 0) {
-            System.out.print("How many are dependencies of this task?: ");
-            int noOfDependencies = sc.nextInt();
-            sc.nextLine();
+            int noOfDependencies =  getNumberOfInput("How many are dependencies of this task?: ");
             for (int k = 0; k < noOfDependencies; k++) {
                 System.out.print("Enter the name of dependency task (" + (k+1) + "): ");
                 String dependencyTaskName = sc.nextLine();
                 Task dependencyTask = taskService.getTaskByTaskName(projectPlan.getTasks(), dependencyTaskName);
                 task.getPreRequisiteTasks().add(dependencyTask);
             }
-        } else {
-            sc.nextLine();
         }
         System.out.println();
     }
@@ -115,5 +103,20 @@ public class InOutServiceImpl implements InOutService {
     public void outputEndTaskCreationNotice(ProjectPlan projectPlan) {
         System.out.println("********************** End of Creating tasks for Project Plan: " + projectPlan.getPlanName() + " **********************");
         System.out.println();
+    }
+
+    private int getNumberOfInput(String message) {
+        int number = 0;
+        do {
+            System.out.print(message);
+            while (!sc.hasNextInt()) {
+                System.out.print("Please enter a valid number!: ");
+                sc.next();
+            }
+            number = sc.nextInt();
+        } while (number <= 0);
+        sc.nextLine();
+
+        return number;
     }
 }
