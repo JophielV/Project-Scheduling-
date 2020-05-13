@@ -23,11 +23,13 @@ public class Main {
         int projectPlansNo = sc.nextInt();
         sc.nextLine();
 
-        System.out.println("Creating project plans");
+        System.out.println();
+        System.out.println("********************** Creating Project Plans **********************");
+        System.out.println();
 
         for (int i = 0; i < projectPlansNo; i++) {
             ProjectPlan projectPlan = new ProjectPlan();
-            System.out.print("Enter project plan name: " );
+            System.out.print("Enter project plan (" + (i+1) +  ") name: " );
             String projectPlanName = sc.nextLine();
             projectPlan.setPlanName(projectPlanName);
 
@@ -42,10 +44,13 @@ public class Main {
             int noOfTasks = sc.nextInt();
             sc.nextLine();
 
-            System.out.println("Creating tasks for this plan");
+            System.out.println();
+            System.out.println("******** Creating tasks for Project Plan: " + projectPlan.getPlanName() + " ********");
+            System.out.println();
+
             for (int j = 0; j < noOfTasks; j++) {
                 Task task = new Task();
-                System.out.print("Enter task name: " );
+                System.out.print("Enter task (" + (j+1) + ") name: " );
                 String taskName = sc.nextLine();
                 task.setTaskName(taskName);
 
@@ -58,7 +63,7 @@ public class Main {
                     int noOfDependencies = sc.nextInt();
                     sc.nextLine();
                     for (int k = 0; k < noOfDependencies; k++) {
-                        System.out.print("Enter the name of dependency task (" + k + "): ");
+                        System.out.print("Enter the name of dependency task (" + (k+1) + "): ");
                         String dependencyTaskName = sc.nextLine();
                         Task dependencyTask = getTask(projectPlan.getTasks(), dependencyTaskName);
                         task.getPreRequisiteTasks().add(dependencyTask);
@@ -66,9 +71,13 @@ public class Main {
                 } else {
                     sc.nextLine();
                 }
+
+                System.out.println();
                 computeStartAndEndDateOfTask(projectPlan, task);
                 projectPlan.getTasks().add(task);
             }
+            System.out.println("********************** End of Creating tasks for Project Plan: " + projectPlan.getPlanName() + " **********************");
+            System.out.println();
             computeEndDateOfProjectPlan(projectPlan);
             project.getProjectPlans().add(projectPlan);
         }
