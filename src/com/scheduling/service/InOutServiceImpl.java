@@ -7,6 +7,7 @@ import com.scheduling.model.ProjectPlan;
 import com.scheduling.model.Task;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class InOutServiceImpl implements InOutService {
@@ -17,8 +18,7 @@ public class InOutServiceImpl implements InOutService {
     @Override
     public void getProjectNameInput(Project project) {
         LocalDate projectStartDate = LocalDate.now();
-        System.out.print("Enter project name: ");
-        String projectName = sc.nextLine();
+        String projectName = getStringOfInput("Enter project name: ");
         project.setProjectName(projectName);
         project.setStartDate(projectStartDate);
     }
@@ -30,8 +30,7 @@ public class InOutServiceImpl implements InOutService {
 
     @Override
     public void getProjectPlanNameInput(ProjectPlan projectPlan, int index) {
-        System.out.print("Enter project plan (" + (index + 1) +  ") name: " );
-        String projectPlanName = sc.nextLine();
+        String projectPlanName = getStringOfInput("Enter project plan (" + (index + 1) +  ") name: ");
         projectPlan.setPlanName(projectPlanName);
     }
 
@@ -42,8 +41,7 @@ public class InOutServiceImpl implements InOutService {
 
     @Override
     public void getTaskNameInput(Task task, int index) {
-        System.out.print("Enter task (" + (index + 1) + ") name: " );
-        String taskName = sc.nextLine();
+        String taskName = getStringOfInput("Enter task (" + (index + 1) + ") name: ");
         task.setTaskName(taskName);
     }
 
@@ -60,10 +58,20 @@ public class InOutServiceImpl implements InOutService {
             int noOfDependencies =  getNumberOfInput("How many are dependencies of this task?: ", true);
             for (int k = 0; k < noOfDependencies; k++) {
                 System.out.println("Task list for this plan: " + taskService.getTaskListChoices(projectPlan));
-                System.out.print("Enter the name of dependency task (" + (k+1) + "): ");
-                String dependencyTaskName = sc.nextLine();
-                Task dependencyTask = taskService.getTaskByTaskName(projectPlan.getTasks(), dependencyTaskName);
-                task.getPreRequisiteTasks().add(dependencyTask);
+
+                boolean validTask = false;
+                do {
+                    System.out.print("Enter the name of dependency task (" + (k+1) + "): ");
+                    String dependencyTaskName = sc.nextLine();
+                    Optional<Task> dependencyTask = taskService.getTaskByTaskName(projectPlan.getTasks(), dependencyTaskName);
+                    if (dependencyTask.isPresent()) {
+                        task.getPreRequisiteTasks().add(dependencyTask.get());
+                        validTask = true;
+                    } else {
+                        System.out.println("Warning: Task name does not exist!");
+                        validTask = false;
+                    }
+                } while(!validTask);
             }
         }
         System.out.println();
@@ -119,5 +127,15 @@ public class InOutServiceImpl implements InOutService {
         sc.nextLine();
 
         return number;
+    }
+
+    private String getStringOfInput(String message) {
+        String input = null;
+        do {
+            System.out.print(message);
+            input = sc.nextLine();
+        } while (input == null || input.isEmpty());
+
+        return input;
     }
 }

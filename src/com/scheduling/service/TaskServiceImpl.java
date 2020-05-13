@@ -12,9 +12,8 @@ import java.util.stream.Collectors;
 public class TaskServiceImpl implements TaskService {
 
     @Override
-    public Task getTaskByTaskName(List<Task> tasks, String taskName) {
-        Optional<Task> task =  tasks.stream().filter(t -> taskName.equals(t.getTaskName())).findFirst();
-        return task.get();
+    public Optional<Task> getTaskByTaskName(List<Task> tasks, String taskName) {
+        return tasks.stream().filter(t -> taskName.equals(t.getTaskName())).findFirst();
     }
 
     @Override
