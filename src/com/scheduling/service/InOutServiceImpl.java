@@ -25,7 +25,7 @@ public class InOutServiceImpl implements InOutService {
 
     @Override
     public int getNoOfProjectPlansInput() {
-        return getNumberOfInput("Enter number of project plans: ");
+        return getNumberOfInput("Enter number of project plans: ", false);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class InOutServiceImpl implements InOutService {
 
     @Override
     public int getNoOfTasksInput() {
-        return getNumberOfInput("Enter number of tasks for this plan: ");
+        return getNumberOfInput("Enter number of tasks for this plan: ", false);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class InOutServiceImpl implements InOutService {
 
     @Override
     public int getNoOfDaysToCompleteTask(Task task) {
-        int noOfDaysToComplete = getNumberOfInput("Enter number of days to complete this task: ");
+        int noOfDaysToComplete = getNumberOfInput("Enter number of days to complete this task: ", false);
         task.setNoOfDaysToComplete(noOfDaysToComplete);
         return noOfDaysToComplete;
     }
@@ -57,8 +57,9 @@ public class InOutServiceImpl implements InOutService {
     @Override
     public void getTaskDependenciesInput(ProjectPlan projectPlan, Task task) {
         if (projectPlan.getTasks().size() > 0) {
-            int noOfDependencies =  getNumberOfInput("How many are dependencies of this task?: ");
+            int noOfDependencies =  getNumberOfInput("How many are dependencies of this task?: ", true);
             for (int k = 0; k < noOfDependencies; k++) {
+                System.out.println("Task list for this plan: " + taskService.getTaskListChoices(projectPlan));
                 System.out.print("Enter the name of dependency task (" + (k+1) + "): ");
                 String dependencyTaskName = sc.nextLine();
                 Task dependencyTask = taskService.getTaskByTaskName(projectPlan.getTasks(), dependencyTaskName);
@@ -105,7 +106,7 @@ public class InOutServiceImpl implements InOutService {
         System.out.println();
     }
 
-    private int getNumberOfInput(String message) {
+    private int getNumberOfInput(String message, boolean isZeroAllowed) {
         int number = 0;
         do {
             System.out.print(message);
@@ -114,7 +115,7 @@ public class InOutServiceImpl implements InOutService {
                 sc.next();
             }
             number = sc.nextInt();
-        } while (number <= 0);
+        } while ((number <= -1 && isZeroAllowed) || (number <= 0 && !isZeroAllowed));
         sc.nextLine();
 
         return number;

@@ -9,5 +9,7 @@ public interface TaskService {
 
     Task getTaskByTaskName(List<Task> tasks, String taskName);
 
+    String getTaskListChoices(ProjectPlan projectPlan);
+
     void computeStartAndEndDateOfTask(ProjectPlan projectPlan, Task task);
 }

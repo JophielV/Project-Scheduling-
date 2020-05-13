@@ -7,6 +7,7 @@ import com.scheduling.model.Task;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class TaskServiceImpl implements TaskService {
 
@@ -14,6 +15,12 @@ public class TaskServiceImpl implements TaskService {
     public Task getTaskByTaskName(List<Task> tasks, String taskName) {
         Optional<Task> task =  tasks.stream().filter(t -> taskName.equals(t.getTaskName())).findFirst();
         return task.get();
+    }
+
+    @Override
+    public String getTaskListChoices(ProjectPlan projectPlan) {
+        return projectPlan.getTasks().stream()
+                .map(a -> a.getTaskName()).collect(Collectors.joining(", "));
     }
 
     @Override
