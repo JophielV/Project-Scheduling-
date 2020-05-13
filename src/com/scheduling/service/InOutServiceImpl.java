@@ -40,8 +40,20 @@ public class InOutServiceImpl implements InOutService {
     }
 
     @Override
-    public void getTaskNameInput(Task task, int index) {
-        String taskName = getStringOfInput("Enter task (" + (index + 1) + ") name: ");
+    public void getTaskNameInput(ProjectPlan projectPlan, Task task, int index) {
+        boolean validTaskName = false;
+        String taskName;
+        do {
+            taskName = getStringOfInput("Enter task (" + (index + 1) + ") name: ");
+            Optional<Task> dependencyTask = taskService.getTaskByTaskName(projectPlan.getTasks(), taskName);
+            if (dependencyTask.isPresent()) {
+                System.out.println("Warning: Task name already exists for this plan!");
+                validTaskName = false;
+            } else {
+                validTaskName = true;
+            }
+        } while(!validTaskName);
+
         task.setTaskName(taskName);
     }
 
@@ -61,8 +73,7 @@ public class InOutServiceImpl implements InOutService {
 
                 boolean validTask = false;
                 do {
-                    System.out.print("Enter the name of dependency task (" + (k+1) + "): ");
-                    String dependencyTaskName = sc.nextLine();
+                    String dependencyTaskName = getStringOfInput("Enter the name of dependency task (" + (k + 1) + "): ");
                     Optional<Task> dependencyTask = taskService.getTaskByTaskName(projectPlan.getTasks(), dependencyTaskName);
                     if (dependencyTask.isPresent()) {
                         task.getPreRequisiteTasks().add(dependencyTask.get());

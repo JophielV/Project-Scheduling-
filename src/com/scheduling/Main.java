@@ -37,7 +37,7 @@ public class Main {
 
             for (int j = 0; j < noOfTasks; j++) {
                 Task task = new Task();
-                inOutService.getTaskNameInput(task, j);
+                inOutService.getTaskNameInput(projectPlan, task, j);
                 inOutService.getNoOfDaysToCompleteTask(task);
                 inOutService.getTaskDependenciesInput(projectPlan, task);
                 taskService.computeStartAndEndDateOfTask(projectPlan, task);

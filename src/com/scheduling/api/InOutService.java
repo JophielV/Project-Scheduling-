@@ -14,7 +14,7 @@ public interface InOutService {
 
     int getNoOfTasksInput();
 
-    void getTaskNameInput(Task task, int index);
+    void getTaskNameInput(ProjectPlan projectPlan, Task task, int index);
 
     int getNoOfDaysToCompleteTask(Task task);
 
