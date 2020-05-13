@@ -90,12 +90,12 @@ public class Main {
         for (ProjectPlan projectPlan: project.getProjectPlans()) {
             System.out.println("*********** Project Plan: " + projectPlan.getPlanName());
             for (Task task : projectPlan.getTasks())  {
-                System.out.println("**** Task: " + task.getTaskName() + ", startDate: " + task.getStartDate() + ", endDate: " + task.getEndDate());
+                System.out.println("**** Task: " + task.getTaskName()  + ", Days to complete: " + task.getNoOfDaysToComplete() + ", Start Date: " + task.getStartDate() + ", End Date: " + task.getEndDate());
             }
-            System.out.println("*********** Project Plan: StartDate: " + projectPlan.getStartDate() + ", EndDate: " + projectPlan.getEndDate());
+            System.out.println("*********** Project Plan: " + " Days to complete: " + projectPlan.getNoOfDaysToComplete() + ", Start Date: " + projectPlan.getStartDate()  + ", End Date: " + projectPlan.getEndDate());
             System.out.println();
         }
-        System.out.println("Project: StartDate: " + project.getStartDate() + ", EndDate: " + project.getEndDate());
+        System.out.println("Project: " + " Days to complete: " + project.getNoOfDaysToComplete()  + ", Start Date: " + project.getStartDate() + ", End Date: " + project.getEndDate());
 
     }
 
@@ -105,7 +105,7 @@ public class Main {
     }
 
     private static void computeStartAndEndDateOfTask(ProjectPlan projectPlan, Task task) {
-        int noOfDaysToComplete = task.getNoOfDaysToComplete();
+        int noOfDaysToComplete = task.getNoOfDaysToComplete() - 1;
         if (projectPlan.getTasks().size() == 0 || task.getPreRequisiteTasks().size() == 0) {
             task.setStartDate(projectPlan.getStartDate());
         } else {
@@ -120,11 +120,17 @@ public class Main {
         Task mostRecentTask = projectPlan.getTasks().stream()
                 .sorted(Comparator.comparing(Task::getEndDate, Comparator.nullsLast(Comparator.reverseOrder()))).findFirst().get();
         projectPlan.setEndDate(mostRecentTask.getEndDate());
+
+        int totalCompletionDays = projectPlan.getTasks().stream().mapToInt(Task::getNoOfDaysToComplete).sum();
+        projectPlan.setNoOfDaysToComplete(totalCompletionDays);
     }
 
     private static void computeEndDateOfProject(Project project) {
         ProjectPlan latestProjectPlan = project.getProjectPlans().stream()
                 .sorted(Comparator.comparing(ProjectPlan::getEndDate, Comparator.nullsLast(Comparator.reverseOrder()))).findFirst().get();
         project.setEndDate(latestProjectPlan.getEndDate());
+
+        int totalCompletionDays = project.getProjectPlans().stream().mapToInt(ProjectPlan::getNoOfDaysToComplete).sum();
+        project.setNoOfDaysToComplete(totalCompletionDays);
     }
 }
