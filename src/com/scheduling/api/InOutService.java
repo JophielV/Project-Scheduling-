@@ -12,6 +12,8 @@ public interface InOutService {
 
     void getProjectPlanNameInput(ProjectPlan projectPlan, int index);
 
+    void getProjectPlanStartDateInput(ProjectPlan projectPlan);
+
     int getNoOfTasksInput();
 
     void getTaskNameInput(ProjectPlan projectPlan, Task task, int index);
@@ -20,7 +22,9 @@ public interface InOutService {
 
     void getTaskDependenciesInput(ProjectPlan projectPlan, Task task);
 
-    void outputFinalSchedule(Project project);
+    void outputProjectPlanSchedule(ProjectPlan projectPlan);
+
+    void outputOverallProjectSchedule(Project project);
 
     void outputCreateProjectPlanNotice();
 

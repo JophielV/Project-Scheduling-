@@ -6,9 +6,14 @@ import com.scheduling.model.Project;
 import com.scheduling.model.ProjectPlan;
 import com.scheduling.model.Task;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class InOutServiceImpl implements InOutService {
 
@@ -32,6 +37,27 @@ public class InOutServiceImpl implements InOutService {
     public void getProjectPlanNameInput(ProjectPlan projectPlan, int index) {
         String projectPlanName = getStringOfInput("Enter project plan (" + (index + 1) +  ") name: ");
         projectPlan.setPlanName(projectPlanName);
+    }
+
+    @Override
+    public void getProjectPlanStartDateInput(ProjectPlan projectPlan) {
+        boolean isValid = false;
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate convertedDate = null;
+        do {
+            String startDate = getStringOfInput("Enter start date for this project plan (yyyy-mm-dd): ");
+            if (isValidDate(startDate)) {
+                convertedDate = LocalDate.parse(startDate, dateFormatter);
+                if (!convertedDate.isBefore(LocalDate.now())) {
+                    isValid = true;
+                } else {
+                    System.out.println("Warning: Past dates not valid!");
+                }
+            } else {
+                System.out.println("Warning: Invalid Date!");
+            }
+        } while(!isValid);
+        projectPlan.setStartDate(convertedDate);
     }
 
     @Override
@@ -95,20 +121,37 @@ public class InOutServiceImpl implements InOutService {
     }
 
     @Override
-    public void outputFinalSchedule(Project project) {
-        System.out.println("********************** SCHEDULE OUTPUT **********************");
+    public void outputProjectPlanSchedule(ProjectPlan projectPlan) {
+        System.out.println("********************** PROJECT PLAN SUMMARY **********************");
+        outputTasksDetails(projectPlan);
+        System.out.println("********************** END OF PROJECT PLAN SUMMARY **********************");
+        System.out.println();
+    }
+
+    private void outputTasksDetails(ProjectPlan projectPlan) {
+        System.out.println("*********** Project Plan: " + projectPlan.getPlanName());
+        System.out.println("*********** Project Plan Start date: " + projectPlan.getStartDate());
+        for (Task task : projectPlan.getTasks())  {
+            System.out.println("**** Task: " + task.getTaskName()  + ", Days to complete: " + task.getNoOfDaysToComplete() + ", Start Date: " + task.getStartDate() + ", End Date: " + task.getEndDate());
+            if (task.getPreRequisiteTasks().size() > 0) {
+                System.out.println("******** Dependency tasks: " + task.getPreRequisiteTasks().stream().map(a -> a.getTaskName()).collect(Collectors.joining(", ")));
+            }
+        }
+        System.out.println("*********** Project Plan: " + " Days to complete: " + projectPlan.getNoOfDaysToComplete() + ", Start Date: " + projectPlan.getStartDate()  + ", End Date: " + projectPlan.getEndDate());
+        System.out.println();
+    }
+
+    @Override
+    public void outputOverallProjectSchedule(Project project) {
+        System.out.println("********************** OVERALL PROJECT SCHEDULE OUTPUT **********************");
         System.out.println(" Project: " + project.getProjectName());
         System.out.println();
 
         for (ProjectPlan projectPlan: project.getProjectPlans()) {
-            System.out.println("*********** Project Plan: " + projectPlan.getPlanName());
-            for (Task task : projectPlan.getTasks())  {
-                System.out.println("**** Task: " + task.getTaskName()  + ", Days to complete: " + task.getNoOfDaysToComplete() + ", Start Date: " + task.getStartDate() + ", End Date: " + task.getEndDate());
-            }
-            System.out.println("*********** Project Plan: " + " Days to complete: " + projectPlan.getNoOfDaysToComplete() + ", Start Date: " + projectPlan.getStartDate()  + ", End Date: " + projectPlan.getEndDate());
-            System.out.println();
+            outputTasksDetails(projectPlan);
         }
         System.out.println("Project: " + " Days to complete: " + project.getNoOfDaysToComplete()  + ", Start Date: " + project.getStartDate() + ", End Date: " + project.getEndDate());
+        System.out.println("********************** END OF OVERALL PROJECT SCHEDULE OUTPUT **********************");
     }
 
     @Override
@@ -154,5 +197,16 @@ public class InOutServiceImpl implements InOutService {
         } while (input == null || input.isEmpty());
 
         return input;
+    }
+
+    public boolean isValidDate(String dateStr) {
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setLenient(false);
+        try {
+            sdf.parse(dateStr);
+        } catch (ParseException e) {
+            return false;
+        }
+        return true;
     }
 }

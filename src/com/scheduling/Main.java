@@ -29,7 +29,7 @@ public class Main {
         for (int i = 0; i < projectPlansNo; i++) {
             ProjectPlan projectPlan = new ProjectPlan();
             inOutService.getProjectPlanNameInput(projectPlan, i);
-            projectPlanService.setProjectPlanStartDate(project, projectPlan);
+            inOutService.getProjectPlanStartDateInput(projectPlan);
 
             int noOfTasks = inOutService.getNoOfTasksInput();
 
@@ -46,9 +46,11 @@ public class Main {
             inOutService.outputEndTaskCreationNotice(projectPlan);
             projectPlanService.setProjectPlanEndDate(projectPlan);
             projectService.addProjectPlanToProject(project, projectPlan);
+
+            inOutService.outputProjectPlanSchedule(projectPlan);
         }
         projectService.setProjectEndDate(project);
 
-        inOutService.outputFinalSchedule(project);
+        inOutService.outputOverallProjectSchedule(project);
     }
 }
