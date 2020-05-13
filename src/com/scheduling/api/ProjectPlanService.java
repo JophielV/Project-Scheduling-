@@ -8,7 +8,7 @@ public interface ProjectPlanService {
 
     void setProjectPlanStartDate(Project project, ProjectPlan projectPlan);
 
-    void computeEndDateOfProjectPlan(ProjectPlan projectPlan);
+    void setProjectPlanEndDate(ProjectPlan projectPlan);
 
     void addTaskToProjectPlan(ProjectPlan projectPlan, Task task);
 

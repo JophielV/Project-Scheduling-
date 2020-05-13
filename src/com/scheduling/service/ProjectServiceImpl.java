@@ -9,7 +9,7 @@ import java.util.Comparator;
 public class ProjectServiceImpl implements ProjectService {
 
     @Override
-    public void computeEndDateOfProject(Project project) {
+    public void setProjectEndDate(Project project) {
         ProjectPlan latestProjectPlan = project.getProjectPlans().stream()
                 .sorted(Comparator.comparing(ProjectPlan::getEndDate, Comparator.nullsLast(Comparator.reverseOrder()))).findFirst().get();
         project.setEndDate(latestProjectPlan.getEndDate());

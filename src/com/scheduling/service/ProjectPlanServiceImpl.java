@@ -21,7 +21,7 @@ public class ProjectPlanServiceImpl implements ProjectPlanService {
     }
 
     @Override
-    public void computeEndDateOfProjectPlan(ProjectPlan projectPlan) {
+    public void setProjectPlanEndDate(ProjectPlan projectPlan) {
         Task mostRecentTask = projectPlan.getTasks().stream()
                 .sorted(Comparator.comparing(Task::getEndDate, Comparator.nullsLast(Comparator.reverseOrder()))).findFirst().get();
         projectPlan.setEndDate(mostRecentTask.getEndDate());

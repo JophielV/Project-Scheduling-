@@ -4,7 +4,7 @@ import com.scheduling.model.Project;
 import com.scheduling.model.ProjectPlan;
 import com.scheduling.model.Task;
 
-public interface AppService {
+public interface InOutService {
 
     void getProjectNameInput(Project project);
 

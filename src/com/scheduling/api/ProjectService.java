@@ -5,7 +5,7 @@ import com.scheduling.model.ProjectPlan;
 
 public interface ProjectService {
 
-    void computeEndDateOfProject(Project project);
+    void setProjectEndDate(Project project);
 
     void addProjectPlanToProject(Project project, ProjectPlan projectPlan);
 }

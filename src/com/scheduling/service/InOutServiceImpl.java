@@ -1,6 +1,6 @@
 package com.scheduling.service;
 
-import com.scheduling.api.AppService;
+import com.scheduling.api.InOutService;
 import com.scheduling.api.TaskService;
 import com.scheduling.model.Project;
 import com.scheduling.model.ProjectPlan;
@@ -9,7 +9,7 @@ import com.scheduling.model.Task;
 import java.time.LocalDate;
 import java.util.Scanner;
 
-public class AppServiceImpl implements AppService {
+public class InOutServiceImpl implements InOutService {
 
     private Scanner sc = new Scanner(System.in);
     private TaskService taskService = new TaskServiceImpl();
@@ -77,6 +77,7 @@ public class AppServiceImpl implements AppService {
         } else {
             sc.nextLine();
         }
+        System.out.println();
     }
 
     @Override
