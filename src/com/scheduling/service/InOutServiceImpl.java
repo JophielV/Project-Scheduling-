@@ -75,11 +75,12 @@ public class InOutServiceImpl implements InOutService {
                 do {
                     String dependencyTaskName = getStringOfInput("Enter the name of dependency task (" + (k + 1) + "): ");
                     Optional<Task> dependencyTask = taskService.getTaskByTaskName(projectPlan.getTasks(), dependencyTaskName);
-                    if (dependencyTask.isPresent()) {
+                    if (dependencyTask.isPresent() &&
+                            task.getPreRequisiteTasks().stream().filter(p -> dependencyTaskName.equals(p.getTaskName())).count() == 0) {
                         task.getPreRequisiteTasks().add(dependencyTask.get());
                         validTask = true;
                     } else {
-                        System.out.println("Warning: Task name does not exist!");
+                        System.out.println("Warning: Task name does not exist or already added as dependency to this task!");
                         validTask = false;
                     }
                 } while(!validTask);
