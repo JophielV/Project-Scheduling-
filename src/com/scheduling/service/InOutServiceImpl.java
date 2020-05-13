@@ -67,7 +67,12 @@ public class InOutServiceImpl implements InOutService {
     @Override
     public void getTaskDependenciesInput(ProjectPlan projectPlan, Task task) {
         if (projectPlan.getTasks().size() > 0) {
-            int noOfDependencies =  getNumberOfInput("How many are dependencies of this task?: ", true);
+            int noOfDependencies;
+            do {
+                noOfDependencies = getNumberOfInput("How many are dependencies of this task? (Current number of added tasks for this plan: " +
+                        projectPlan.getTasks().size() + "): ", true);
+            } while (noOfDependencies > projectPlan.getTasks().size());
+
             for (int k = 0; k < noOfDependencies; k++) {
                 System.out.println("Task list for this plan: " + taskService.getTaskListChoices(projectPlan));
 
