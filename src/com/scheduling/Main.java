@@ -24,6 +24,7 @@ public class Main {
 
         inOutService.getProjectNameInput(project);
         int projectPlansNo = inOutService.getNoOfProjectPlansInput();
+
         inOutService.outputCreateProjectPlanNotice();
 
         for (int i = 0; i < projectPlansNo; i++) {
@@ -44,6 +45,7 @@ public class Main {
                 projectPlanService.addTaskToProjectPlan(projectPlan, task);
             }
             inOutService.outputEndTaskCreationNotice(projectPlan);
+
             projectPlanService.setProjectPlanEndDate(projectPlan);
             projectService.addProjectPlanToProject(project, projectPlan);
 

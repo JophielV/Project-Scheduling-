@@ -7,7 +7,7 @@ import java.util.List;
 public class Task {
 
     private String taskName;
-    private List<Task> preRequisiteTasks = new ArrayList<>();;
+    private List<Task> dependencyTasks = new ArrayList<>();;
     private int noOfDaysToComplete;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -20,12 +20,12 @@ public class Task {
         this.taskName = taskName;
     }
 
-    public List<Task> getPreRequisiteTasks() {
-        return preRequisiteTasks;
+    public List<Task> getDependencyTasks() {
+        return dependencyTasks;
     }
 
-    public void setPreRequisiteTasks(List<Task> preRequisiteTasks) {
-        this.preRequisiteTasks = preRequisiteTasks;
+    public void setDependencyTasks(List<Task> dependencyTasks) {
+        this.dependencyTasks = dependencyTasks;
     }
 
     public int getNoOfDaysToComplete() {

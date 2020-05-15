@@ -25,12 +25,16 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void computeStartAndEndDateOfTask(ProjectPlan projectPlan, Task task) {
         int noOfDaysToComplete = task.getNoOfDaysToComplete() - 1;
-        if (projectPlan.getTasks().size() == 0 || task.getPreRequisiteTasks().size() == 0) {
+        if (projectPlan.getTasks().size() == 0 || task.getDependencyTasks().size() == 0) {
+            // start date of this task is the start date of the project plan if there are no current tasks
+            // or if this task has no dependency
             task.setStartDate(projectPlan.getStartDate());
         } else {
-            Task mostRecentTask = task.getPreRequisiteTasks().stream()
-                    .sorted(Comparator.comparing(Task::getEndDate, Comparator.nullsLast(Comparator.reverseOrder()))).findFirst().get();
-            task.setStartDate(mostRecentTask.getEndDate().plusDays(1));
+            Task latestDependencyTask = task.getDependencyTasks().stream()
+                    .sorted(Comparator.comparing(Task::getEndDate, Comparator.nullsLast(Comparator.reverseOrder())))
+                    .findFirst().get();
+            // start date of this task is after the end date of the latest dependency task
+            task.setStartDate(latestDependencyTask.getEndDate().plusDays(1));
         }
         task.setEndDate(task.getStartDate().plusDays(noOfDaysToComplete));
     }

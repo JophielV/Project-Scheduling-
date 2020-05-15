@@ -19,6 +19,7 @@ public class InOutServiceImpl implements InOutService {
 
     private Scanner sc = new Scanner(System.in);
     private TaskService taskService = new TaskServiceImpl();
+    private static final String DATE_INPUT_FORMAT = "yyyy-MM-dd";
 
     @Override
     public void getProjectNameInput(Project project) {
@@ -42,7 +43,7 @@ public class InOutServiceImpl implements InOutService {
     @Override
     public void getProjectPlanStartDateInput(ProjectPlan projectPlan) {
         boolean isValid = false;
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_INPUT_FORMAT);
         LocalDate convertedDate = null;
         do {
             String startDate = getStringOfInput("Enter start date for this project plan (yyyy-mm-dd): ");
@@ -97,18 +98,21 @@ public class InOutServiceImpl implements InOutService {
             do {
                 noOfDependencies = getNumberOfInput("How many are dependencies of this task? (Current number of added tasks for this plan: " +
                         projectPlan.getTasks().size() + "): ", true);
+                if (noOfDependencies > projectPlan.getTasks().size()) {
+                    System.out.println("Warning: Must not exceed the current number of added tasks!");
+                }
             } while (noOfDependencies > projectPlan.getTasks().size());
 
             for (int k = 0; k < noOfDependencies; k++) {
-                System.out.println("Task list for this plan: " + taskService.getTaskListChoices(projectPlan));
+                System.out.println("Added tasks for this plan: " + taskService.getTaskListChoices(projectPlan));
 
                 boolean validTask = false;
                 do {
                     String dependencyTaskName = getStringOfInput("Enter the name of dependency task (" + (k + 1) + "): ");
                     Optional<Task> dependencyTask = taskService.getTaskByTaskName(projectPlan.getTasks(), dependencyTaskName);
                     if (dependencyTask.isPresent() &&
-                            task.getPreRequisiteTasks().stream().filter(p -> dependencyTaskName.equals(p.getTaskName())).count() == 0) {
-                        task.getPreRequisiteTasks().add(dependencyTask.get());
+                            task.getDependencyTasks().stream().filter(p -> dependencyTaskName.equals(p.getTaskName())).count() == 0) {
+                        task.getDependencyTasks().add(dependencyTask.get());
                         validTask = true;
                     } else {
                         System.out.println("Warning: Task name does not exist or already added as dependency to this task!");
@@ -133,8 +137,8 @@ public class InOutServiceImpl implements InOutService {
         System.out.println("*********** Project Plan Start date: " + projectPlan.getStartDate());
         for (Task task : projectPlan.getTasks())  {
             System.out.println("**** Task: " + task.getTaskName()  + ", Days to complete: " + task.getNoOfDaysToComplete() + ", Start Date: " + task.getStartDate() + ", End Date: " + task.getEndDate());
-            if (task.getPreRequisiteTasks().size() > 0) {
-                System.out.println("******** Dependency tasks: " + task.getPreRequisiteTasks().stream().map(a -> a.getTaskName()).collect(Collectors.joining(", ")));
+            if (task.getDependencyTasks().size() > 0) {
+                System.out.println("******** Dependency tasks: " + task.getDependencyTasks().stream().map(a -> a.getTaskName()).collect(Collectors.joining(", ")));
             }
         }
         System.out.println("*********** Project Plan: " + " Days to complete: " + projectPlan.getNoOfDaysToComplete() + ", Start Date: " + projectPlan.getStartDate()  + ", End Date: " + projectPlan.getEndDate());
@@ -200,7 +204,7 @@ public class InOutServiceImpl implements InOutService {
     }
 
     public boolean isValidDate(String dateStr) {
-        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat sdf = new SimpleDateFormat(DATE_INPUT_FORMAT);
         sdf.setLenient(false);
         try {
             sdf.parse(dateStr);
